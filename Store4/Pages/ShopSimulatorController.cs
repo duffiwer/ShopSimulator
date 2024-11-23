@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Store4.BLL;
 using Store4.DAL;
 using Store4.Shared;
 
-namespace Store4.BLL
+namespace Store4.Pages
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -85,7 +86,7 @@ namespace Store4.BLL
             var affordableItems = await _inventoryService.GetAffordableItemsForBudgetAsync(budget);
 
             return Ok(affordableItems);
-            
+
         }
         [HttpPost("purchase")]
         public async Task<IActionResult> PurchaseItems([FromBody] PurchaseRequestModel requestModel)

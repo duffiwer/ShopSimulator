@@ -12,6 +12,6 @@ namespace Store4.DAL
 
         Task<decimal> PurchaseItemsAsync(string shopCode, List<Inventory> purchaseRequests);
         Task<List<Inventory>> GetInventoryByProductsAsync(string shopCode, List<string> productNames);
-        Task<IEnumerable<Inventory>> GetInventoriesAsync(); // Добавляем метод
+        Task<IEnumerable<Inventory>> GetInventoriesAsync(); 
     }
 }
