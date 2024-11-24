@@ -251,17 +251,13 @@ namespace Store4.DAL
                 throw new ArgumentException("Shop code and purchase requests are required.");
             }
 
-            // Читаем существующий инвентарь из файла
             var lines = File.Exists(_filePath) ? await File.ReadAllLinesAsync(_filePath) : Array.Empty<string>();
             var updatedLines = new List<string>();
-            var totalCost = 0m; // Общая стоимость покупки
-
-            // Словарь для отслеживания измененных строк
+            var totalCost = 0m; 
             var processedProducts = new HashSet<string>();
 
             foreach (var request in purchaseRequests)
             {
-                // Найти строку с нужным товаром
                 var line = lines.FirstOrDefault(l =>
                 {
                     var columns = l.Split(',');
@@ -274,41 +270,31 @@ namespace Store4.DAL
                 }
 
                 var columns = line.Split(',');
-
-                // Разбираем количество и цену товара
                 var currentQuantity = int.Parse(columns[3]);
                 var price = decimal.Parse(columns[2], CultureInfo.InvariantCulture);
-
-                // Проверяем, хватает ли товара для покупки
                 if (currentQuantity < request.Quantity)
                 {
                     throw new InvalidOperationException($"Not enough '{request.ProductName}' in shop '{shopCode}'.");
                 }
 
-                // Уменьшаем количество товара
                 var remainingQuantity = currentQuantity - request.Quantity;
 
-                // Добавляем стоимость текущей покупки
                 totalCost += request.Quantity * price;
 
-                // Добавляем обновленную строку
                 updatedLines.Add($"{shopCode},{request.ProductName},{price.ToString(CultureInfo.InvariantCulture)},{remainingQuantity}");
 
-                // Добавляем товар в список обработанных
                 processedProducts.Add($"{shopCode},{request.ProductName}");
             }
 
-            // Оставляем строки, которые не были обработаны (остальные товары)
             updatedLines.AddRange(lines.Where(line =>
             {
                 var columns = line.Split(',');
                 return columns.Length != 4 || columns[0] != shopCode || !processedProducts.Contains($"{columns[0]},{columns[1]}");
             }));
 
-            // Записываем обновленный инвентарь
             await File.WriteAllLinesAsync(_filePath, updatedLines);
 
-            return totalCost; // Возвращаем общую стоимость покупки
+            return totalCost;
         }
         public async Task<List<Inventory>> GetInventoryByProductsAsync(string shopCode, List<string> productNames)
         {

@@ -12,13 +12,13 @@ namespace Store4.Pages
         private readonly ProductService _productService;
         private readonly ShopService _shopService;
         private readonly InventoryService _inventoryService;
-        public ShopSimulatorController(ProductService productService, ShopService shopService, InventoryService inventoryService)
+       public ShopSimulatorController(ProductService productService, ShopService shopService, InventoryService inventoryService)
         {
-            _productService = productService;
+           _productService = productService;
             _shopService = shopService;
             _inventoryService = inventoryService;
         }
-
+     
         [HttpPost("add-inventory")]
         public async Task<IActionResult> UpdateInventory([FromQuery] string shopCode, [FromBody] List<Inventory> items)
         {
@@ -63,6 +63,7 @@ namespace Store4.Pages
             var cheapestShop = await _inventoryService.GetCheapestShopForProductAsync(productName);
             return Ok(cheapestShop);
         }
+        /*
         [HttpGet("inventory")]
         public async Task<IActionResult> GetAllInventory()
         {
@@ -75,6 +76,7 @@ namespace Store4.Pages
 
             return Ok(inventoryList);
         }
+        */
         [HttpGet("affordable-items")]
         public async Task<IActionResult> GetAffordableItems(decimal budget)
         {
@@ -99,7 +101,6 @@ namespace Store4.Pages
                     return BadRequest("Invalid purchase request.");
                 }
 
-                // Преобразуем входную модель в сущности Inventory
                 var purchaseRequests = requestModel.PurchaseRequests.Select(pr => new Inventory
                 {
                     ShopCode = requestModel.ShopCode,
@@ -117,7 +118,6 @@ namespace Store4.Pages
             }
         }
 
-        // Метод для поиска самого дешевого магазина для одного товара
         [HttpPost("FindCheapestShop")]
         public async Task<IActionResult> FindCheapestShop([FromBody] PurchaseRequest purchaseRequest)
         {
@@ -126,16 +126,13 @@ namespace Store4.Pages
                 return BadRequest("Valid product name and quantity are required.");
             }
 
-            // Вызываем сервис для поиска самого дешевого магазина
             var shop = await _inventoryService.FindCheapestShopForProductAsync(purchaseRequest);
 
-            // Если магазин не найден
             if (shop == null)
             {
                 return NotFound("No shop can fulfill the request.");
             }
 
-            // Возвращаем данные о найденном магазине
             return Ok(new
             {
                 shop.Code,
@@ -143,9 +140,6 @@ namespace Store4.Pages
                 shop.Address
             });
         }
-
-
-
 
     }
 }
