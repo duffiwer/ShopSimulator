@@ -8,10 +8,11 @@ var builder = WebApplication.CreateBuilder(args);
 var dalImplementation = builder.Configuration["DAL:Implementation"];
 var connectionString = builder.Configuration.GetConnectionString("Database");
 
+
 if (dalImplementation == "Database")
 {
     builder.Services.AddDbContext<StoreSimulatorContext>(options =>
-    options.UseSqlServer(connectionString));
+        options.UseSqlite(connectionString)); // ”казываем использование SQLite
     builder.Services.AddScoped<IShopRepository, DatabaseShopRepository>();
     builder.Services.AddScoped<IProductRepository, DatabaseProductRepository>();
     builder.Services.AddScoped<IInventoryRepository, DatabaseInventoryRepository>();

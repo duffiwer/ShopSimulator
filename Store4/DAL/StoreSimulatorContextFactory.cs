@@ -8,7 +8,7 @@ namespace Store4.DAL
         public StoreSimulatorContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<StoreSimulatorContext>();
-            optionsBuilder.UseSqlServer("Server=DUFFIWERPC\\SQLEXPRESS;Database=StoreSimulator;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True");
+            optionsBuilder.UseSqlite("Data Source=Store4.db");
 
             return new StoreSimulatorContext(optionsBuilder.Options);
         }
